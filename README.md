@@ -13,7 +13,6 @@ In this project, the goal is to take sensor data from the GCAS wearable and trai
 4. In prediction mode, the RaspberryPi will send the cleaned sensor readings to an AWS Sagemaker endpoint and receive a prediction label 
 5. In prediction mode, the prediction label is then pushed to an MQTT topic.
 
-
 **IntelEdison**
 1. Hosts Django web page
 2. Connects as MQTT subscriber to the same topic as RaspberryPi publisher
@@ -23,7 +22,8 @@ In this project, the goal is to take sensor data from the GCAS wearable and trai
 **AWS SageMaker**
 1. Needs to be used as an AWS SageMaker instanced (or have already installed AWS SageMaker SDK for Python) as per their tutorial. Most of the code is derived from the tutorials.
 2. Accesses S3 bucket containing training data, performs training job for XGBoost multiclassification, creates endpoint which contains the model artifacts capable for real-time predictions.
-3. The Jupyter notebook needs to be rerun every time a new model is needed. It will update the existing 'GCAS' endpoint. 
+3. The Jupyter notebook needs to be rerun every time a new model is needed. It will update the existing 'GCAS' endpoint.
+*NOTE: creating/updating an endpoint takes a long time (~ 5-10 minutes)*
 
 **Terminal**
 1. Connects as MQTT subscriber to the same topic as RaspberryPi publisher
