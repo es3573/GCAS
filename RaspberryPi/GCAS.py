@@ -26,7 +26,7 @@ NUM_FEATURES =  37*10+1# 221 = 1 (label) + 10 readings * (22(bno)+15(3*5axls) fe
 training_data = 'training_data.csv'
 bucket = 'sagemaker-gcas'
 prefix = 'sagemaker/xgboost'
-endpoint_name = 'GCAS2019-05-01-18-35-20'
+endpoint_name = 'GCAS'
 broker_address = '192.168.0.24'
 uplink_topic = "topic/gcas/prediction"
 
@@ -46,7 +46,7 @@ def get_reading(label):
     final_readings = [label]
     started_reading = 0
     first_reading = 0
-    print('\n\r Hold button while performing training gesture')
+    print('\n\rHold button while performing training gesture')
     while (started_reading == 0):
         button_pressed = GPIO.input(button_pin)
         while((button_pressed == 0) and (len(final_readings) != NUM_FEATURES)):
@@ -128,7 +128,7 @@ def request_prediction():
         result = response['Body'].read().decode('ascii')
         print('Predicted label is {}.'.format(result))
         print('Publishing to ' + uplink_topic)
-        mqtt_client.publish(uplink_topic, int(float(result)))   
+        mqtt_client.publish(uplink_topic, int(float(result)))
     else:
         print('\n\rSomething went wrong. Try again')
 
