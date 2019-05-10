@@ -25,7 +25,7 @@ SECRET_KEY = '3l#@nrc397ko$dn2^1ta9f4y0n&r_3*qu)8#vpo(bfrn_0ddbi'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.22']
+ALLOWED_HOSTS = ['192.168.0.22', '192.168.0.196']
 
 
 # Application definition

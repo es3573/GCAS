@@ -9,12 +9,17 @@ import keyboard
 
 # Defines
 NO_MOTION = 0
-LEFT_SWIPE = 1
-RIGHT_SWIPE = 2
-UP_SWIPE = 3
-DOWN_SWIPE = 4
+RIGHT_SWIPE = 1
+LEFT_SWIPE = 2
+DOUBLE_TAP = 3
+WAVE = 4
 
-broker_address = '192.168.0.24'
+# home
+#broker_address = '192.168.0.24'
+# pigeon
+#broker_address = '192.168.2.143'
+# columbia
+broker_address = '192.168.0.215'
 topic = "topic/gcas/prediction"
 
 # Local Functions
@@ -34,10 +39,16 @@ def process_prediction(payload):
     if action == NO_MOTION:
         keyboard.write('No motion detected')
         keyboard.press('enter')
-    if action == LEFT_SWIPE:
+    elif action == LEFT_SWIPE:
         keyboard.press_and_release('down')
     elif action == RIGHT_SWIPE:
         keyboard.press_and_release('up')
+    elif action == DOUBLE_TAP:
+        keyboard.write('Double tap')
+        keyboard.press('enter')
+    elif action == WAVE:
+        keyboard.write('Wave')
+        keyboard.press('enter')
 
 # MAIN
 mqtt_client = mqtt.Client()

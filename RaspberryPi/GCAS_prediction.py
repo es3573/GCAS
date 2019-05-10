@@ -29,7 +29,12 @@ training_data = 'training_data.csv'
 bucket = 'sagemaker-gcas'
 prefix = 'sagemaker/xgboost'
 endpoint_name = 'GCAS'
-broker_address = '192.168.0.24'
+# home
+#broker_address = '192.168.0.24'
+#pigeon
+#broker_address = '192.168.2.143'
+# columbia
+broker_address = '192.168.0.215'
 uplink_topic = "topic/gcas/prediction"
 
 # Local Functions
@@ -140,10 +145,13 @@ print("\n\rInitializing hardware and clients . . .")
 i2c = busio.I2C(board.SCL, board.SDA)
 
 mux = adafruit_tca9548a.TCA9548A(i2c)
-bno_sensor = adafruit_bno055.BNO055(mux[0])
+bno_sensor = adafruit_bno055.BNO055(mux[2])
 axl_array = []
-for i in range(1,6):
-    axl_array.append(adafruit_lis3dh.LIS3DH_I2C(mux[i]))
+axl_array.append(adafruit_lis3dh.LIS3DH_I2C(mux[0]))
+axl_array.append(adafruit_lis3dh.LIS3DH_I2C(mux[1]))
+axl_array.append(adafruit_lis3dh.LIS3DH_I2C(mux[3]))
+axl_array.append(adafruit_lis3dh.LIS3DH_I2C(mux[6]))
+axl_array.append(adafruit_lis3dh.LIS3DH_I2C(mux[7]))
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)

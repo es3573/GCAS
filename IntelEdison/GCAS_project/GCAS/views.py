@@ -10,17 +10,22 @@ from .tables import GCASTable
 import paho.mqtt.client as mqtt
 import mraa
 import math
+import time
 
 # Defines
 NO_MOTION = 0
-LEFT_SWIPE = 1
-RIGHT_SWIPE = 2
-UP_SWIPE = 3
-DOWN_SWIPE = 4
+RIGHT_SWIPE = 1
+LEFT_SWIPE = 2
+DOUBLE_TAP = 3
+WAVE = 4
 
-broker_address = '192.168.0.24'
+# home
+#broker_address = '192.168.0.24'
+# pigeon
+#broker_address = '192.168.2.143'
+# columbia
+broker_address = '192.168.0.215'
 downlink_topic = "topic/gcas/prediction"
-uplink_topic = "topic/gcas/uplink"
 
 # Local Functions
 # The callback for when the client receives a CONNACK response from the server.
@@ -44,9 +49,16 @@ def convert_temp(raw_data):
     temperature = 1.0/(math.log(R/R0)/B+1/298.15)-273.15
     return temperature
 
+# reset LEDs
+def reset_LEDs():
+    red_led.write(0)
+    green_led.write(0)
+    blue_led.write(0)
+    
 # process prediction for action
 def process_prediction(payload, data):
     action = int(payload)
+    reset_LEDs()
     if action == NO_MOTION:
         current_temp = convert_temp(tempSensor.read())
         data.temperature = current_temp
@@ -55,7 +67,31 @@ def process_prediction(payload, data):
         data.save()
     elif action == LEFT_SWIPE:
         data.action = 'LEFT SWIPE'
+        data.expected = 'blue LED ON'
         data.save()
+        blue_led.write(1)
+    elif action == RIGHT_SWIPE:
+        
+        data.action = 'RIGHT SWIPE'
+        data.expected = 'green LED ON'
+        data.save()
+        green_led.write(1)
+    elif action == DOUBLE_TAP:
+        data.action = 'DOUBLE TAP'
+        data.expected = 'buzzer beeps twice'
+        data.save()
+        buzzer.write(1)
+        time.sleep(0.3)
+        buzzer.write(0)
+        time.sleep(0.3)
+        buzzer.write(1)
+        time.sleep(0.3)
+        buzzer.write(0)
+    elif action == WAVE:
+        data.action = 'WAVE'
+        data.expected = 'red LED ON'
+        data.save()
+        red_led.write(1)
     else:
         data.action = 'UNKNOWN GESTURE'
         data.save()        
@@ -72,6 +108,15 @@ def index(request):
 # MAIN
 # Inits
 tempSensor = mraa.Aio(1)
+red_led = mraa.Gpio(2)
+green_led = mraa.Gpio(3)
+blue_led = mraa.Gpio(4)
+buzzer = mraa.Gpio(6)
+red_led.dir(mraa.DIR_OUT)
+green_led.dir(mraa.DIR_OUT)
+blue_led.dir(mraa.DIR_OUT)
+buzzer.dir(mraa.DIR_OUT)
+
 mqtt_client = mqtt.Client()
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
